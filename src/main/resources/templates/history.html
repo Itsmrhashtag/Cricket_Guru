@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="shortcut icon" href="#">
+    <meta charset="UTF-8">
+    <title>Match Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="../static/style.css" rel="stylesheet">
+  </head>
+<nav class="bg-white shadow-md">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex justify-between h-16">
+
+      <!-- Logo or Brand -->
+      <div class="flex-shrink-0 flex items-center">
+        <a href="#" class="text-2xl font-bold text-indigo-600">YourLogo</a>
+      </div>
+
+      <!-- Navigation links -->
+      <div class="hidden md:block md:flex md:items-center md:space-x-4">
+        <div class="flex items-center space-x-4">
+          <a href="dashboard" class="text-gray-700 hover:text-indigo-600">Home</a>
+          <a href="live" class="text-gray-700 hover:text-indigo-600">Live Matches</a>
+          <a href="history" class="text-gray-700 hover:text-indigo-600">Last Matches History</a>
+          <a href="contact_us" class="text-gray-700 hover:text-indigo-600">Contact Us</a>
+        </div>
+      </div>
+      <div class="hidden items-center md:flex md:items-center md:space-x-4">
+        <a href="login"  class="hover:text-gray-300">Login</a>
+        <a href="register" class="hover:text-gray-300 px-3">Register</a>
+      </div>
+
+      <!-- Hamburger menu for mobile -->
+      <div class="flex md:hidden items-center">
+        <button id="mobileMenuButton" class="text-gray-700 hover:text-indigo-600 focus:outline-none focus:text-indigo-600">
+          <svg class="h-6 w-6" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+            <path d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="mobileNav" class="shadow-md md:hidden hidden">
+        <div class="flex justify-end">
+          <button id="closeMobileNavButton" class="text-white px-3 py-2 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="md:hidden px-2 pt-10 pb-3 space-y-1 sm:px-3">
+          <!-- Navigation links for mobile -->
+          <a href="dashboard" class="block text-gray-700 hover:text-indigo-600">Home</a>
+          <a href="live" class="block text-gray-700 hover:text-indigo-600">Live Matches</a>
+          <a href="history" class="block text-gray-700 hover:text-indigo-600">Last Matches History</a>
+          <a href="contact_us" class="block text-gray-700 hover:text-indigo-600">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="card-container flex-wrap flex-col md:flex-row flex">
+  <div class="p-5 md:w-96 w-full">
+    <div id="matchDetails"></div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+        const mobileMenuButton = document.getElementById("mobileMenuButton");
+        const mobileNav = document.getElementById("mobileNav");
+
+        mobileMenuButton.addEventListener("click", function () {
+            mobileNav.classList.toggle("open");
+        });
+        closeMobileNavButton.addEventListener("click", function () {
+            mobileNav.classList.remove("open");
+        });
+    });
+<!--const userData = localStorage.getItem('userData');-->
+<!--const parsedUserData = JSON.parse(userData);-->
+<!--const access_token = parsedUserData.access_token;-->
+<!--console.log(access_token);-->
+
+
+// Function to fetch data from the API
+async function fetchMatchData() {
+  const userData = localStorage.getItem('userData');
+  const parsedUserData = JSON.parse(userData);
+  const access_token = parsedUserData.access_token;
+  console.log(access_token);
+
+  try {
+    const response = await fetch('http://localhost:8080/api/match/', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${access_token}`
+      }
+    });
+
+    const data = await response.json();
+    console.log(data);
+    displayMatchData(data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+
+
+  // Function to display match data
+  function displayMatchData(data) {
+
+    const matchDetailsDiv = document.getElementById('matchDetails');
+
+    let html = '';
+
+    // Loop through the matches and create HTML elements
+    data.forEach(match => {
+      html += `<div class="hover:bg-blue-300 transition-all rounded-lg cursor-pointer h-full border-b-orange-400 border-b-8 card border p-4 hover:border-b-green-400 bg-white shadow-lg mt-2">
+    <div class="header border-b-2 py-3 border-b-gray-200">
+        <h1 class="font-bold">${match.teamHeading}</h1>
+        <p> ${match.matchNumberVenue}</p>
+    </div>
+    <div class="body mt-4">
+        <div class="flex justify-between px-2">
+            <p class="font-bold">${match.battingTeam}</p>
+            <p class="font-bold">${match.battingTeamScore}</p>
+        </div>
+        <div class="flex justify-between px-2">
+            <p class="font-bold">${match.bowlingTeam}</p>
+            <p class="font-bold">${match.bowlingTeamScore}</p>
+        </div>
+
+    </div>
+    <div class="footer mt-3">
+        <p class="text-red-500">${match.liveText}</p>
+        <p class="text-green-600">${match.textComplete}</p>
+
+    </div>
+</div>
+      `;
+    });
+
+    // Set the HTML content to the matchDetailsDiv
+    matchDetailsDiv.innerHTML = html;
+  }
+
+  // Fetch match data when the page loads
+  window.onload = function() {
+    fetchMatchData();
+  };
+  function showMessage(message) {
+        // Replace this with your logic to display the message to the user
+        alert(message);
+    }
+</script>
+</html>

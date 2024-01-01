@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="#">
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+
+<body>
+
+<div class="min-h-fit flex items-center justify-center bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white p-8 rounded-md shadow-md">
+        <div>
+            <h2 class="text-center text-3xl font-extrabold text-gray-800">Create an account</h2>
+        </div>
+        <form class="mt-8 space-y-6">
+            <input type="hidden" name="remember" value="true">
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="firstName" class="sr-only">First Name</label>
+                        <input id="firstName" name="firstName" type="text" autocomplete="given-name" required
+                               class="block w-full rounded-md border border-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 px-4 py-3"
+                               placeholder="First Name">
+                    </div>
+                    <div>
+                        <label for="lastName" class="sr-only">Last Name</label>
+                        <input id="lastName" name="lastName" type="text" autocomplete="family-name" required
+                               class="block w-full rounded-md border border-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 px-4 py-3"
+                               placeholder="Last Name">
+                    </div>
+                </div>
+                <div>
+                    <label for="username" class="sr-only">Username</label>
+                    <input id="username" name="username" type="text" autocomplete="username" required
+                           class="block w-full rounded-md border border-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 px-4 py-3"
+                           placeholder="Username">
+                </div>
+                <div>
+                    <label for="email" class="sr-only">Email address</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required
+                           class="block w-full rounded-md border border-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 px-4 py-3"
+                           placeholder="Email address">
+                </div>
+                <div>
+                    <label for="password" class="sr-only">Password</label>
+                    <input id="password" name="password" type="password" autocomplete="new-password" required
+                           class="block w-full rounded-md border border-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 px-4 py-3"
+                           placeholder="Password">
+                </div>
+                <div>
+                    <label for="confirmPassword" class="sr-only">Confirm Password</label>
+                    <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required
+                           class="block w-full rounded-md border border-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 px-4 py-3"
+                           placeholder="Confirm Password">
+                </div>
+                <div>
+                    <label for="phone" class="sr-only">Phone Number</label>
+                    <input id="phone" name="phone" type="tel" autocomplete="tel"
+                           class="block w-full rounded-md border border-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 px-4 py-3"
+                           placeholder="Phone Number">
+                </div>
+            </div>
+
+            <div>
+                <button onclick="submitRegisterForm(event)" type="button"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Sign
+                    Up</button>
+            </div>
+        </form>
+        <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600">Already have an account? <a href="login"
+                                                                         class="font-medium text-indigo-600 hover:text-indigo-500">Log in</a></p>
+        </div>
+    </div>
+</div>
+<script>
+    function submitRegisterForm(event) {
+        event.preventDefault();
+
+        // Get form input values
+        var firstName = document.getElementById("firstName").value;
+        var lastName = document.getElementById("lastName").value;
+        var username = document.getElementById("username").value;
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        var confirmPassword = document.getElementById("confirmPassword").value;
+        var phone = document.getElementById("phone").value;
+
+        // Simple validation
+        if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
+            showMessage("Please fill in all required fields.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            showMessage("Passwords do not match.");
+            return;
+        }
+        fetch('http://localhost:8080/api/user/register', {
+                method: 'POST',
+                body: JSON.stringify({ firstName, lastName, username, email, password, phone }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+            if (response.ok) {
+                    // Status code is within the 200-299 range
+                    console.log('Register successful');
+                    showMessage("Register successful");
+                    return response.json();
+                    // You can perform actions for successful login here
+                } else if (response.status === 400) {
+                    console.error('Bad request');
+                    showMessage("Bad request");
+                    // Handle bad request (e.g., incorrect username/password)
+                }else if (response.status === 403) {
+                    console.error('User Already Register');
+                    showMessage("User Already Register!!!");
+                 }else {
+                    console.error('Error:', response.status);
+                    // Handle other status codes if needed
+                }
+        }).then(data => {
+        // Log the JSON response after successful login
+        console.log('Register successful');
+        console.log('Response JSON:', data);
+        }).catch(error => {
+            // Handle error
+            console.error('Error:', error);
+            showMessage("Error: " + error.message);
+        });
+
+            //For this example, let's log the form data
+            console.log("Form submitted:", { firstName, lastName, username, email, password, phone });
+
+    }
+    function showMessage(message) {
+        // Replace this with your logic to display the message to the user
+        alert(message);
+    }
+
+</script>
+
+</body>
+</html>

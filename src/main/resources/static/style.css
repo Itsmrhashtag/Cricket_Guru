@@ -1,0 +1,30 @@
+#mobileNav {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);/* Adjust the opacity to your liking */
+        z-index: 9999; /* Ensure the navigation is above other content */
+        overflow: auto; /* Enable scrolling for the menu if needed */
+        padding: 20px; /* Add padding or adjust as needed */
+        box-sizing: border-box;
+    }
+
+    #mobileNav.open {
+        display: block;
+    }
+
+    /* Additional styles for the links inside mobileNav */
+    #mobileNav a {
+        display: block;
+        color: white;
+        padding: 10px 0;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    #mobileNav a:hover {
+        color: lightgray;
+    }

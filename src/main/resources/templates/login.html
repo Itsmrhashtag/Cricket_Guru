@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="#">
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+</head>
+<body>
+<!--<form class="max-w-sm mx-auto mt-8 p-4 bg-white rounded shadow-md">-->
+<!--    <div class="mb-4">-->
+<!--        <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>-->
+<!--        <input type="text" id="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">-->
+<!--    </div>-->
+<!--    <div class="mb-6">-->
+<!--        <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>-->
+<!--        <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">-->
+<!--    </div>-->
+<!--    <div class="flex items-center justify-between">-->
+<!--        <button onclick="submitForm(event)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">-->
+<!--            Submit-->
+<!--        </button>-->
+<!--    </div>-->
+<!--</form>-->
+<div class="min-h-fit flex items-center justify-center bg-gray-100 py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white p-8 rounded-lg  shadow hover:drop-shadow-2xl ">
+        <div>
+            <h2 class="text-center text-3xl font-extrabold text-gray-800">Log in to your account</h2>
+        </div>
+<form class="mt-8 space-y-6">
+    <input type="hidden" name="remember" value="true">
+    <div class="space-y-4">
+        <div>
+            <label for="username" class="sr-only">User Name</label>
+            <input id="username" name="username" type="test" autocomplete="username" required
+                   class="block w-full rounded-md border border-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 px-4 py-3"
+                   placeholder="User Name">
+        </div>
+        <div>
+            <label for="password" class="sr-only">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required
+                   class="block w-full rounded-md border border-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 px-4 py-3"
+                   placeholder="Password">
+        </div>
+    </div>
+
+    <div class="flex items-center justify-between">
+        <div class="flex items-center">
+            <input id="remember_me" name="remember_me" type="checkbox"
+                   class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0">
+            <label for="remember_me" class="ml-2 text-sm text-gray-700">Remember me</label>
+        </div>
+
+        <div class="text-sm">
+            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Forgot your password?</a>
+        </div>
+    </div>
+
+    <div>
+        <button onclick="submitForm(event)" type="button"
+                class="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Log
+            In</button>
+    </div>
+</form>
+        <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600">Don't have an account? <a href="register"
+                                                                       class="font-medium text-indigo-600 hover:text-indigo-500">Sign Up</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Your JavaScript code here
+    function submitForm(event) {
+    event.preventDefault();
+    console.log("0-0-0-0--0----------------");
+        // Get values from input fields
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        // Your logic for handling the form submission
+        // For instance, you can use these values to perform an AJAX request
+        // Here's a basic example using fetch to perform a POST request
+        fetch('http://localhost:8080/oauth/token?grant_type=password&username=' + username + '&password=' + password + '&scope=write', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Basic aGFzaHRhZzoxMjM0'
+                // Add other necessary headers here if required
+            }
+            // You might need to handle the response accordingly
+        }).then(response => {
+            if (response.ok) {
+                    // Status code is within the 200-299 range
+                    console.log('Login successful');
+                    showMessage("Login successful");
+                    return response.json();
+                    // You can perform actions for successful login here
+                } else if (response.status === 400) {
+                    console.error('Bad request');
+                    // Handle bad request (e.g., incorrect username/password)
+                } else {
+                    console.error('Error:', response.status);
+                    // Handle other status codes if needed
+                }
+        }).then(data => {
+        // Log the JSON response after successful login
+        console.log('Login successful');
+        console.log('Response JSON:', data);
+        localStorage.setItem('userData', JSON.stringify(data));
+        window.location.href = 'live';
+        }).catch(error => {
+            // Handle error
+            console.error('Error:', error);
+            showMessage("Error: " + error.message);
+        });
+    }
+
+    function showMessage(message) {
+        // Replace this with your logic to display the message to the user
+        alert(message);
+    }
+</script>
+</body>
+</html>

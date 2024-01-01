@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="#">
+    <meta charset="UTF-8">
+    <title>User Details</title>
+    <link href="../static/style.css" rel="stylesheet">
+</head>
+<nav class="bg-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between h-16">
+
+            <!-- Logo or Brand -->
+            <div class="flex-shrink-0 flex items-center">
+                <a href="#" class="text-2xl font-bold text-indigo-600">YourLogo</a>
+            </div>
+
+            <!-- Navigation links -->
+            <div class="hidden md:block md:flex md:items-center md:space-x-4">
+                <div class="flex items-center space-x-4">
+                    <a href="dashboard" class="text-gray-700 hover:text-indigo-600">Home</a>
+                    <a href="live" class="text-gray-700 hover:text-indigo-600">Live Matches</a>
+                    <a href="history" class="text-gray-700 hover:text-indigo-600">Last Matches History</a>
+                    <a href="contact_us" class="text-gray-700 hover:text-indigo-600">Contact Us</a>
+                </div>
+            </div>
+            <div class="hidden items-center md:flex md:items-center md:space-x-4">
+                <a href="login"  class="hover:text-gray-300">Login</a>
+                <a href="register" class="hover:text-gray-300 px-3">Register</a>
+            </div>
+
+            <!-- Hamburger menu for mobile -->
+            <div class="flex md:hidden items-center">
+                <button id="mobileMenuButton" class="text-gray-700 hover:text-indigo-600 focus:outline-none focus:text-indigo-600">
+                    <svg class="h-6 w-6" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobileNav" class="shadow-md md:hidden hidden">
+                <div class="flex justify-end">
+                    <button id="closeMobileNavButton" class="text-white px-3 py-2 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="md:hidden px-2 pt-10 pb-3 space-y-1 sm:px-3">
+                    <!-- Navigation links for mobile -->
+                    <a href="dashboard" class="block text-gray-700 hover:text-indigo-600">Home</a>
+                    <a href="live" class="block text-gray-700 hover:text-indigo-600">Live Matches</a>
+                    <a href="history" class="block text-gray-700 hover:text-indigo-600">Last Matches History</a>
+                    <a href="contact_us" class="block text-gray-700 hover:text-indigo-600">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<!--<nav class="flex items-center justify-between p-4">-->
+<!--    <div class="flex items-center">-->
+<!--        <a href="#" class="text-xl font-bold"># Scorer-->
+<!--        </a>-->
+<!--    </div>-->
+<!--    <div class="md:flex md:items-center md:space-x-4">-->
+<!--        <a href="dashboard"  class="hover:text-gray-300">Home</a>-->
+<!--        <a href="#" class="hover:text-gray-300">Live Matches</a>-->
+<!--        <a href="#" class="hover:text-gray-300">All Matches</a>-->
+<!--        <a href="#" class="hover:text-gray-300">Point Table</a>-->
+<!--    </div>-->
+<!--    <div class="flex items-center md:flex md:items-center md:space-x-4">-->
+<!--        <a href="login"  class="hover:text-gray-300">Login</a>-->
+<!--        <a href="register" class="hover:text-gray-300 px-3">Register</a>-->
+<!--    </div>-->
+<!--</nav>-->
+<body>
+<div id="userDataContainer">
+    <!-- User data will be displayed here -->
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const mobileMenuButton = document.getElementById("mobileMenuButton");
+        const mobileNav = document.getElementById("mobileNav");
+
+        mobileMenuButton.addEventListener("click", function () {
+            mobileNav.classList.toggle("open");
+        });
+        closeMobileNavButton.addEventListener("click", function () {
+            mobileNav.classList.remove("open");
+        });
+    });
+    // Retrieve user data from localStorage
+    const userData = localStorage.getItem('userData');
+    const userDataContainer = document.getElementById('userDataContainer');
+
+const deletionTime =  30 * 1000;
+        setTimeout(function() {
+    localStorage.removeItem('userData');
+    console.log('User data has been deleted from localStorage after 1 minute.');
+}, deletionTime);
+    if (userData) {
+        const parsedUserData = JSON.parse(userData);
+        const access_token = parsedUserData.access_token;
+        console.log(access_token);
+        const userDataHTML = `
+            <h1>User Details</h1>
+            <p>Access Token: ${parsedUserData.access_token}</p>
+            <!-- Display other user data as needed -->
+        `;
+        userDataContainer.innerHTML = userDataHTML;
+    } else {
+        userDataContainer.innerHTML = '<p>No user data found.</p>';
+    }
+</script>
+</body>
+</html>

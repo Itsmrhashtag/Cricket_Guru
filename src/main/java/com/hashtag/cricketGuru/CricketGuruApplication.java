@@ -1,0 +1,13 @@
+package com.hashtag.cricketGuru;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class CricketGuruApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(CricketGuruApplication.class, args);
+	}
+
+}
